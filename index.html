@@ -33,6 +33,7 @@
       background:#fff;
       overflow-x:hidden;
     }
+
     .bg{
       position:fixed; inset:0;
       background:
@@ -52,6 +53,7 @@
     .wrap{ width:min(var(--maxw),92vw); margin:0 auto; padding: 22px 0 110px; }
     section{ position:relative; padding: 18px 10px; margin: 14px auto; text-align:center; }
 
+    /* ✅ FIX: по умолчанию карточки видимы (даже если JS не работает) */
     .card{
       position:relative;
       background: linear-gradient(180deg, var(--cardTop), var(--cardBot));
@@ -63,11 +65,22 @@
       -webkit-backdrop-filter: blur(12px);
       overflow:hidden;
       z-index:1;
+
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ✅ Анимацию включаем только когда JS реально запустился */
+    .js .card{
       opacity:0;
       transform: translateY(16px);
       transition: opacity .55s ease, transform .55s ease;
     }
-    .card.revealed{ opacity:1; transform: translateY(0); }
+    .js .card.revealed{
+      opacity:1;
+      transform: translateY(0);
+    }
+
     .card:before{
       content:"";
       position:absolute;
@@ -578,6 +591,9 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      /* ✅ FIX: отмечаем, что JS работает (для анимации reveal) */
+      document.documentElement.classList.add('js');
+
       // Smooth anchor scroll
       document.querySelectorAll('a[href^="#"]').forEach(a=>{
         a.addEventListener('click', (e)=>{
